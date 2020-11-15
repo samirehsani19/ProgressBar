@@ -1,0 +1,108 @@
+﻿@page "/progressbar"
+
+<div class="bar-container">
+        <h1 id="clock"><p>00:@second</p></h1>
+    <ul>
+        <li>
+            <img src="/img/created.png" />
+            <br />
+            <p>00:00</p>
+            <i class="fa fa-check-circle" style="@checkCreated"></i>
+            <p>Created</p>
+        </li>
+        <li>
+            <img src="/img/assigned.png" />
+            <br />
+            <p>00:@assigned</p>
+            <i class="fa fa-check-circle" style="@checkAssign"></i>
+            <div id="assign-bar" style="@assignBar"></div>
+            <p>Assigned</p>
+        </li>
+        <li>
+            <img src="/img/loaded.png" />
+            <br />
+            <p>00:@loaded</p>
+            <i class="fa fa-check-circle" style="@checkLoad"></i>
+            <div id="load-bar" style="@loadBar"></div>
+            <p>Loaded</p>
+        </li>
+        <li>
+            <img src="/img/done.png" />
+            <br />
+            <p>00:@completed</p>
+            <i class="fa fa-check-circle" style="@checkComplete"></i>
+            <div id="complete-bar" style="@completeBar"></div>
+            <p>Completed</p>
+        </li>
+
+    </ul>
+</div>
+
+
+@code
+{
+
+    int counter = 0;
+    int assigned = 0;
+    int loaded = 0;
+    int completed = 0;
+
+
+    string checkCreated = "background-color: white; color: lawngreen;";
+    string checkAssign = "";
+    string checkLoad = "";
+    string checkComplete = "";
+
+    string assignBar = "";
+    string loadBar = "";
+    string completeBar = "";
+
+
+    int minute = 0;
+    int second = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RunClock();
+        }
+    }
+
+    async Task RunClock()
+    {
+        while (true)
+        {
+            await Task.Delay(1000);
+            counter++;
+            StateHasChanged();
+
+            if (counter <= 5)
+            {
+                assigned = counter;
+                if (counter == 5) { checkAssign = "background-color: white; color: lawngreen;"; assignBar= "background-color: limegreen"; }
+            }
+
+            if (counter > assigned && counter <= 15)
+            {
+                if (counter == 15) { checkLoad = "background-color: white; color: lawngreen;"; loadBar = "background-color: limegreen"; }
+                loaded = (counter - assigned);
+            }
+
+            if (counter > loaded && counter <= 30)
+            {
+                if (counter == 30) { checkComplete = "background-color: white; color: lawngreen;"; completeBar = "background-color: limegreen"; }
+                completed = counter - (assigned + loaded);
+            }
+            if (counter > 30) break;
+            second = counter;
+
+            if (counter ==60)
+            {
+                minute = counter;
+            }
+
+        }
+    }
+
+}
